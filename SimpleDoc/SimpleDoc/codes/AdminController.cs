@@ -29,7 +29,7 @@ namespace SimpleDoc.codes
 
         public object ListCategories()
         {
-            return from a in Management.Data.Categories orderby a.Order ascending select a;
+            return from a in Management.Data.Categories orderby a.Order descending select a;
         }
 
         public object ListDocuments(string category)
@@ -45,6 +45,8 @@ namespace SimpleDoc.codes
 
         public void EditCategory(Category body)
         {
+            if (string.IsNullOrEmpty(body.ID))
+                body.Order = Management.Data.Categories.Count + 1;
             Management.Data.ModifyCategory(body.ID, body.Name, body.Remark, body.Order, body.Enabled);
             Management.Save();
 
@@ -55,7 +57,8 @@ namespace SimpleDoc.codes
         public void EditDocument(Document body)
         {
             int count = Management.Data.Documents.Count(c => c.Category == body.Category);
-            body.Order = count + 1;
+            if (string.IsNullOrEmpty(body.ID))
+                body.Order = count + 1;
             Management.Data.ModifyDocument(body.ID, body.Title, body.Category, body.Order, body.Enabled);
             Management.Save();
         }
