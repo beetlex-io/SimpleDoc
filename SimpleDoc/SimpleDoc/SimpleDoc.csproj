@@ -1,0 +1,265 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Version>0.8.9</Version>
+    <Authors>henryfan</Authors>
+    <Company>ikende.com</Company>
+    <Description>SimpleDoc</Description>
+    <Copyright>Copyright © ikende.com 2019 email:henryfan@msn.com</Copyright>
+    <PackageLicenseUrl>https://github.com/IKende/SimpleDoc/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/IKende/SimpleDoc</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="views\admin\cate.html" />
+    <None Remove="views\admin\edit.html" />
+    <None Remove="views\admin\index.html" />
+    <None Remove="views\admin\login.html" />
+    <None Remove="views\admin\setting.html" />
+    <None Remove="views\css\bootstrap.css" />
+    <None Remove="views\css\idea.css" />
+    <None Remove="views\css\site.css" />
+    <None Remove="views\images\ajax-loader.gif" />
+    <None Remove="views\images\alipay.png" />
+    <None Remove="views\images\close.png" />
+    <None Remove="views\images\directory.png" />
+    <None Remove="views\images\extend.png" />
+    <None Remove="views\images\wechatpay.png" />
+    <None Remove="views\index.html" />
+    <None Remove="views\js\axios.js" />
+    <None Remove="views\js\beetlex4axios.js" />
+    <None Remove="views\js\bootstrap.js" />
+    <None Remove="views\js\bundle.js" />
+    <None Remove="views\js\bundle_min.js" />
+    <None Remove="views\js\component.js" />
+    <None Remove="views\js\highlight.js" />
+    <None Remove="views\js\marked.js" />
+    <None Remove="views\js\vue.js" />
+    <None Remove="views\styles\a11y-dark.css" />
+    <None Remove="views\styles\a11y-light.css" />
+    <None Remove="views\styles\agate.css" />
+    <None Remove="views\styles\an-old-hope.css" />
+    <None Remove="views\styles\androidstudio.css" />
+    <None Remove="views\styles\arduino-light.css" />
+    <None Remove="views\styles\arta.css" />
+    <None Remove="views\styles\ascetic.css" />
+    <None Remove="views\styles\atelier-cave-dark.css" />
+    <None Remove="views\styles\atelier-cave-light.css" />
+    <None Remove="views\styles\atelier-dune-dark.css" />
+    <None Remove="views\styles\atelier-dune-light.css" />
+    <None Remove="views\styles\atelier-estuary-dark.css" />
+    <None Remove="views\styles\atelier-estuary-light.css" />
+    <None Remove="views\styles\atelier-forest-dark.css" />
+    <None Remove="views\styles\atelier-forest-light.css" />
+    <None Remove="views\styles\atelier-heath-dark.css" />
+    <None Remove="views\styles\atelier-heath-light.css" />
+    <None Remove="views\styles\atelier-lakeside-dark.css" />
+    <None Remove="views\styles\atelier-lakeside-light.css" />
+    <None Remove="views\styles\atelier-plateau-dark.css" />
+    <None Remove="views\styles\atelier-plateau-light.css" />
+    <None Remove="views\styles\atelier-savanna-dark.css" />
+    <None Remove="views\styles\atelier-savanna-light.css" />
+    <None Remove="views\styles\atelier-seaside-dark.css" />
+    <None Remove="views\styles\atelier-seaside-light.css" />
+    <None Remove="views\styles\atelier-sulphurpool-dark.css" />
+    <None Remove="views\styles\atelier-sulphurpool-light.css" />
+    <None Remove="views\styles\atom-one-dark-reasonable.css" />
+    <None Remove="views\styles\atom-one-dark.css" />
+    <None Remove="views\styles\atom-one-light.css" />
+    <None Remove="views\styles\codepen-embed.css" />
+    <None Remove="views\styles\color-brewer.css" />
+    <None Remove="views\styles\darcula.css" />
+    <None Remove="views\styles\dark.css" />
+    <None Remove="views\styles\darkula.css" />
+    <None Remove="views\styles\default.css" />
+    <None Remove="views\styles\docco.css" />
+    <None Remove="views\styles\dracula.css" />
+    <None Remove="views\styles\far.css" />
+    <None Remove="views\styles\foundation.css" />
+    <None Remove="views\styles\github-gist.css" />
+    <None Remove="views\styles\github.css" />
+    <None Remove="views\styles\gml.css" />
+    <None Remove="views\styles\googlecode.css" />
+    <None Remove="views\styles\grayscale.css" />
+    <None Remove="views\styles\gruvbox-dark.css" />
+    <None Remove="views\styles\gruvbox-light.css" />
+    <None Remove="views\styles\hopscotch.css" />
+    <None Remove="views\styles\hybrid.css" />
+    <None Remove="views\styles\idea.css" />
+    <None Remove="views\styles\ir-black.css" />
+    <None Remove="views\styles\isbl-editor-dark.css" />
+    <None Remove="views\styles\isbl-editor-light.css" />
+    <None Remove="views\styles\kimbie.dark.css" />
+    <None Remove="views\styles\kimbie.light.css" />
+    <None Remove="views\styles\lightfair.css" />
+    <None Remove="views\styles\magula.css" />
+    <None Remove="views\styles\mono-blue.css" />
+    <None Remove="views\styles\monokai-sublime.css" />
+    <None Remove="views\styles\monokai.css" />
+    <None Remove="views\styles\night-owl.css" />
+    <None Remove="views\styles\nord.css" />
+    <None Remove="views\styles\obsidian.css" />
+    <None Remove="views\styles\ocean.css" />
+    <None Remove="views\styles\paraiso-dark.css" />
+    <None Remove="views\styles\paraiso-light.css" />
+    <None Remove="views\styles\purebasic.css" />
+    <None Remove="views\styles\qtcreator_dark.css" />
+    <None Remove="views\styles\qtcreator_light.css" />
+    <None Remove="views\styles\railscasts.css" />
+    <None Remove="views\styles\rainbow.css" />
+    <None Remove="views\styles\routeros.css" />
+    <None Remove="views\styles\shades-of-purple.css" />
+    <None Remove="views\styles\solarized-dark.css" />
+    <None Remove="views\styles\solarized-light.css" />
+    <None Remove="views\styles\sunburst.css" />
+    <None Remove="views\styles\tomorrow-night-blue.css" />
+    <None Remove="views\styles\tomorrow-night-bright.css" />
+    <None Remove="views\styles\tomorrow-night-eighties.css" />
+    <None Remove="views\styles\tomorrow-night.css" />
+    <None Remove="views\styles\tomorrow.css" />
+    <None Remove="views\styles\vs.css" />
+    <None Remove="views\styles\vs2015.css" />
+    <None Remove="views\styles\xcode.css" />
+    <None Remove="views\styles\xt256.css" />
+    <None Remove="views\styles\zenburn.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="views\js\bootstrap.js" />
+    <EmbeddedResource Include="views\js\bundle.js" />
+    <EmbeddedResource Include="views\js\bundle_min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="views\admin\cate.html" />
+    <EmbeddedResource Include="views\admin\edit.html" />
+    <EmbeddedResource Include="views\admin\index.html" />
+    <EmbeddedResource Include="views\admin\login.html" />
+    <EmbeddedResource Include="views\admin\setting.html" />
+    <EmbeddedResource Include="views\css\bootstrap.css" />
+    <EmbeddedResource Include="views\css\idea.css" />
+    <EmbeddedResource Include="views\css\site.css" />
+    <EmbeddedResource Include="views\images\ajax-loader.gif" />
+    <EmbeddedResource Include="views\images\alipay.png" />
+    <EmbeddedResource Include="views\images\close.png" />
+    <EmbeddedResource Include="views\images\directory.png" />
+    <EmbeddedResource Include="views\images\extend.png" />
+    <EmbeddedResource Include="views\images\wechatpay.png" />
+    <EmbeddedResource Include="views\index.html" />
+    <EmbeddedResource Include="views\js\axios.js" />
+    <EmbeddedResource Include="views\js\beetlex4axios.js" />
+    <EmbeddedResource Include="views\js\component.js" />
+    <EmbeddedResource Include="views\js\highlight.js" />
+    <EmbeddedResource Include="views\js\marked.js" />
+    <EmbeddedResource Include="views\js\vue.js" />
+    <EmbeddedResource Include="views\styles\a11y-dark.css" />
+    <EmbeddedResource Include="views\styles\a11y-light.css" />
+    <EmbeddedResource Include="views\styles\agate.css" />
+    <EmbeddedResource Include="views\styles\an-old-hope.css" />
+    <EmbeddedResource Include="views\styles\androidstudio.css" />
+    <EmbeddedResource Include="views\styles\arduino-light.css" />
+    <EmbeddedResource Include="views\styles\arta.css" />
+    <EmbeddedResource Include="views\styles\ascetic.css" />
+    <EmbeddedResource Include="views\styles\atelier-cave-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-cave-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-dune-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-dune-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-estuary-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-estuary-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-forest-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-forest-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-heath-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-heath-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-lakeside-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-lakeside-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-plateau-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-plateau-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-savanna-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-savanna-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-seaside-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-seaside-light.css" />
+    <EmbeddedResource Include="views\styles\atelier-sulphurpool-dark.css" />
+    <EmbeddedResource Include="views\styles\atelier-sulphurpool-light.css" />
+    <EmbeddedResource Include="views\styles\atom-one-dark-reasonable.css" />
+    <EmbeddedResource Include="views\styles\atom-one-dark.css" />
+    <EmbeddedResource Include="views\styles\atom-one-light.css" />
+    <EmbeddedResource Include="views\styles\codepen-embed.css" />
+    <EmbeddedResource Include="views\styles\color-brewer.css" />
+    <EmbeddedResource Include="views\styles\darcula.css" />
+    <EmbeddedResource Include="views\styles\dark.css" />
+    <EmbeddedResource Include="views\styles\darkula.css" />
+    <EmbeddedResource Include="views\styles\default.css" />
+    <EmbeddedResource Include="views\styles\docco.css" />
+    <EmbeddedResource Include="views\styles\dracula.css" />
+    <EmbeddedResource Include="views\styles\far.css" />
+    <EmbeddedResource Include="views\styles\foundation.css" />
+    <EmbeddedResource Include="views\styles\github-gist.css" />
+    <EmbeddedResource Include="views\styles\github.css" />
+    <EmbeddedResource Include="views\styles\gml.css" />
+    <EmbeddedResource Include="views\styles\googlecode.css" />
+    <EmbeddedResource Include="views\styles\grayscale.css" />
+    <EmbeddedResource Include="views\styles\gruvbox-dark.css" />
+    <EmbeddedResource Include="views\styles\gruvbox-light.css" />
+    <EmbeddedResource Include="views\styles\hopscotch.css" />
+    <EmbeddedResource Include="views\styles\hybrid.css" />
+    <EmbeddedResource Include="views\styles\idea.css" />
+    <EmbeddedResource Include="views\styles\ir-black.css" />
+    <EmbeddedResource Include="views\styles\isbl-editor-dark.css" />
+    <EmbeddedResource Include="views\styles\isbl-editor-light.css" />
+    <EmbeddedResource Include="views\styles\kimbie.dark.css" />
+    <EmbeddedResource Include="views\styles\kimbie.light.css" />
+    <EmbeddedResource Include="views\styles\lightfair.css" />
+    <EmbeddedResource Include="views\styles\magula.css" />
+    <EmbeddedResource Include="views\styles\mono-blue.css" />
+    <EmbeddedResource Include="views\styles\monokai-sublime.css" />
+    <EmbeddedResource Include="views\styles\monokai.css" />
+    <EmbeddedResource Include="views\styles\night-owl.css" />
+    <EmbeddedResource Include="views\styles\nord.css" />
+    <EmbeddedResource Include="views\styles\obsidian.css" />
+    <EmbeddedResource Include="views\styles\ocean.css" />
+    <EmbeddedResource Include="views\styles\paraiso-dark.css" />
+    <EmbeddedResource Include="views\styles\paraiso-light.css" />
+    <EmbeddedResource Include="views\styles\purebasic.css" />
+    <EmbeddedResource Include="views\styles\qtcreator_dark.css" />
+    <EmbeddedResource Include="views\styles\qtcreator_light.css" />
+    <EmbeddedResource Include="views\styles\railscasts.css" />
+    <EmbeddedResource Include="views\styles\rainbow.css" />
+    <EmbeddedResource Include="views\styles\routeros.css" />
+    <EmbeddedResource Include="views\styles\shades-of-purple.css" />
+    <EmbeddedResource Include="views\styles\solarized-dark.css" />
+    <EmbeddedResource Include="views\styles\solarized-light.css" />
+    <EmbeddedResource Include="views\styles\sunburst.css" />
+    <EmbeddedResource Include="views\styles\tomorrow-night-blue.css" />
+    <EmbeddedResource Include="views\styles\tomorrow-night-bright.css" />
+    <EmbeddedResource Include="views\styles\tomorrow-night-eighties.css" />
+    <EmbeddedResource Include="views\styles\tomorrow-night.css" />
+    <EmbeddedResource Include="views\styles\tomorrow.css" />
+    <EmbeddedResource Include="views\styles\vs.css" />
+    <EmbeddedResource Include="views\styles\vs2015.css" />
+    <EmbeddedResource Include="views\styles\xcode.css" />
+    <EmbeddedResource Include="views\styles\xt256.css" />
+    <EmbeddedResource Include="views\styles\zenburn.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="HttpConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="run.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="run.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BeetleX.FastHttpApi" Version="1.7.3.6" />
+    <PackageReference Include="BeetleX.FastHttpApi.Hosting" Version="0.8.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,12 @@
+[
+  {
+    "outputFileName": "views/js/bundle.js",
+    "inputFiles": [
+      "views/js/axios.js",
+      "views/js/highlight.js",
+      "views/js/jquery.js",
+      "views/js/marked.js",
+      "views/js/vue.js"
+    ]
+  }
+]

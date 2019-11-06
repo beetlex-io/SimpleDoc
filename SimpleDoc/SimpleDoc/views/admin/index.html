@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/beetlex4axios.js"></script>
+    <script src="/js/component.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info" :page="'index'">
+
+        </page-header>
+
+
+        <div class="container" style="padding-top:60px;">
+          
+            <form class="form-inline">
+                <div class="form-group">
+                    <category-select :Selecter="Selecter" style="min-width:200px;" @change="listDocument.get()"></category-select>
+                </div>
+
+                
+            </form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th style="width:250px;">分类</th>
+                        <th>标题</th>
+                        <th style="width:80px">排序</th>
+                        <th style="width:80px">发布</th>
+                        <th style="width:200px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>  <category-select :Selecter="{Items:Selecter.Items,Value:Selecter.Value?Selecter.Value:modifyDocument.data.Category}" 
+                                               @change="modifyDocument.data.Category=$event"></category-select> </td>
+                        <td>
+                            <input type="text" v-model="modifyDocument.data.Title" class="form-control input-sm">
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-default btn-sm" @click="modifyDocument.post()">添加</button>
+                        </td>
+                    </tr>
+
+                    <tr v-for="(item,i) in listDocument.result">
+
+                        <td><category-select :Selecter="{Items:Selecter.Items,Value:item.Category}" @change="item.Category=$event;modifyDocument.post(item)"></category-select></td>
+                        <td><input type="text" v-model="item.Title" class="form-control input-sm" @change="modifyDocument.post(item)"></td>
+                        <td><input type="number" v-model="item.Order" class="form-control input-sm" @change="modifyDocument.post(item)"></td>
+                        <td><input type="checkbox" v-model="item.Enabled" @change="modifyDocument.post(item)"></td>
+                        <td>
+                           
+                            <button type="button" @click="removeDocument.get({id:item.ID})" class="btn btn-default btn-sm">删除</button>
+                            <a :href="['doc/'+item.ID+'.html']" class="btn btn-default btn-sm">编辑内容</a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var Selecter = { Items: [], Value: '' };
+        var modifyDocument = new beetlexAction("/admin/EditDocument", { ID: null, Order: 1, Title: '', Category: '', Enabled: false });
+        modifyDocument.requesting = function (d) {
+            if (!d.Title) {
+                alert('输入文章标题！');
+                return false;
+            }
+            if (!d.Category)
+                d.Category = Selecter.Value;
+            return true;
+        };
+        modifyDocument.requested = function (r) {
+            modifyDocument.data.Title = '';
+            modifyDocument.data.ID = null;
+            listDocument.get();
+           
+        };
+
+        var listCatetory = new beetlexAction("/admin/ListCategories", null, []);
+        listCatetory.requested = function (r) {
+            Selecter.Items = r;
+        };
+
+        var listDocument = new beetlexAction("/admin/ListDocuments", { Category: '' }, []);
+        listDocument.requesting = function (d) {
+            d.Category = Selecter.Value;
+            return true;
+        };
+
+        var removeDocument = new beetlexAction("/admin/RemoveDocument", { id: '' });
+        removeDocument.requesting = function (d) {
+            return confirm('是否要删除文章?');
+        };
+        removeDocument.requested = function (r) {
+            listDocument.get();
+        };
+
+        var page = new Vue({
+            el: '#page',
+            data: {
+                info: webSiteInfo,
+                Selecter: Selecter,
+                modifyDocument: modifyDocument,
+                listDocument: listDocument,
+                removeDocument: removeDocument,
+            }
+        });
+        listCatetory.get();
+        listDocument.get();
+    </script>
+</body>
+
+</html>

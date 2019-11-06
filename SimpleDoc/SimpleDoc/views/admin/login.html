@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/beetlex4axios.js"></script>
+    <script src="/js/component.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info">
+
+        </page-header>
+
+
+        <div class="container" style="padding-top:60px;">
+            <div class="center-block" style="width:300px;">
+                <form>
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" v-model="login.data.name" class="form-control input-sm">
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" v-model="login.data.pwd" class="form-control input-sm">
+                    </div>
+                    <button type="button" @click="login.post()" class="btn btn-default btn-sm">登陆</button>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        var login = new beetlexAction("/admin/Login", { name: '', pwd: '' });
+        login.requesting = function (d) {
+            if (!d.name || !d.pwd) {
+                alert('输入登陆用户名和密码！');
+                return false;
+            }
+            return true;
+        };
+        login.requested = function (r) {
+            if (r) {
+                window.location.href = "/admin/";
+            }
+            else {
+                alert('用户名或密码不正确！');
+            }
+        };
+        var page = new Vue({
+            el: '#page',
+            data: {
+                info: webSiteInfo,
+                login: login,
+            }
+        });
+
+    </script>
+</body>
+
+</html>

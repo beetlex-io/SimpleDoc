@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/beetlex4axios.js"></script>
+    <script src="/js/component.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info" :page="'cate'">
+
+        </page-header>
+
+
+        <div class="container center-block" style="padding-top:60px;">
+
+
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th style="width:250px;">名称</th>
+                        <th>备注</th>
+                        <th>发布</th>
+                        <th style="width:80px">排序</th>
+                        <th style="width:200px"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td> <input type="text" v-model="addCategory.data.Name" class="form-control input-sm"></td>
+                        <td> <input type="text" v-model="addCategory.data.Remark" class="form-control input-sm"></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-default btn-sm" @click="addCategory.post()">添加</button>
+                        </td>
+                    </tr>
+
+                    <tr v-for="(item,i) in listCatetory.result">
+
+                        <td> <input type="text" v-model="item.Name" @change="addCatgory.post(item)" class="form-control input-sm"></td>
+                        <td><input type="text" v-model="item.Remark" @change="addCatgory.post(item)"  class="form-control input-sm"></td>
+                        <td><input type="checkbox" v-model="item.Enabled" @change="addCatgory.post(item)"  /></td>
+                        <td><input type="number" v-model="item.Order" @change="addCatgory.post(item)"  class="form-control input-sm"></td>
+                        <td>
+
+                            <button type="button" @click="delCategory.get({id:item.ID})" class="btn btn-default btn-sm">删除</button>
+                            <a :href="['doc/'+item.ID+'.html?cate=true']" class="btn btn-default btn-sm">编辑内容</a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var listCatetory = new beetlexAction("/admin/ListCategories", null, []);
+        var addCatgory = new beetlexAction("/admin/EditCategory", { ID: null, Order: 1, Name: '', Remark: '' });
+        addCatgory.requesting = function (d) {
+            if (!d.Name) {
+                alert('请输入分类名称！');
+                return false;
+            }
+            if (!d.Remark) {
+                alert('请输入分类备注！');
+                return false;
+            }
+            return true;
+        };
+        addCatgory.requested = function (r) {
+            this.data.Name = null;
+            this.data.Remark = null;
+            this.data.ID = null;
+            listCatetory.get();
+        };
+        var delCategory = new beetlexAction("/admin/RemoveCategory", { id: null });
+        delCategory.requesting = function (r) {
+            return confirm('是否要删除分类?');
+        };
+        delCategory.requested = function (r) {
+            listCatetory.get();
+        };
+        var page = new Vue({
+            el: '#page', data: {
+                info: webSiteInfo,
+                listCategory: listCatetory,
+                addCategory: addCatgory,
+                delCategory: delCategory,
+            },
+            methods: {
+                saveAll: function () {
+
+                },
+            }
+
+        });
+        page.listCategory.get();
+    </script>
+</body>
+
+</html>

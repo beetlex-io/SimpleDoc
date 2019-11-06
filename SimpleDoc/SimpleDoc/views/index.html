@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="/GetStyle" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+    <script src="js/bundle_min.js"></script>
+    <!--<script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>-->
+    <script src="js/beetlex4axios.js"></script>
+    <!--<script src="js/marked.js"></script>
+    <script src="/js/highlight.js"></script>
+    <script src="/js/jquery.js"></script>-->
+    <script src="/js/bootstrap.js"></script>
+    <script src="js/component.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info" @stylechange="onSelectStyle($event)">
+
+        </page-header>
+        <div class="container">
+
+
+
+            <div class="row">
+                <div class="catalog">
+
+                    <div class="catalog-content">
+
+                        <ul>
+                            <li v-for="item in directory">
+                                <div>
+
+                                    <a :class="[item.Selected?'active_document_link_cate':'none_document_link']" :href="['#'+item.ID]" @click="item.Expand=!item.Expand;onSelect(item)">
+
+                                        {{item.Name}}
+                                        <span v-if="item.Items.length>0" class="badge" style="float:right;">{{item.Items.length}}</span>
+                                    </a>
+                                </div>
+                                <ol v-if="item.Expand" style="padding-left:30px;">
+                                    <li v-for="sitem in item.Items">
+                                        <a :class="[sitem.Selected?'active_document_link':'none_document_link']" :href="['#'+sitem.ID]" @click="onSelect(sitem)">{{sitem.Title}}</a>
+                                    </li>
+                                </ol>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+                <div>
+
+
+                    <div v-if="!content" style="margin-left:330px;padding-top:70px;">
+
+                        <div style="text-align:center">
+
+                            <p style="font-size:14pt;">   欢迎使用<b>Simple doc</b></p>
+                            <br />
+                            <b>Simple doc</b>是基于<a href="http://ikende.com" target="_blank">BeetleX</a>服务框架构建的多平台的文档服务
+                        </div>
+                        <hr />
+                        <p style="text-align:center;">
+                            QQ:28304340 | wechat:henryfan128
+                        </p>
+                        <p style="text-align:center;color:#c2c2c2;margin-bottom:0px;">
+                            <a class="menu-item" href="https://github.com/ikende/" target="_blank">
+                                <img src="https://img.shields.io/github/followers/ikende?label=%E5%85%B3%E6%B3%A8%E6%88%91%E7%9A%84&style=social" />
+                            </a>
+                            |
+                            <a class="menu-item" href="https://github.com/ikende/beetlex" target="_blank">
+                                <img src="https://img.shields.io/github/stars/ikende/beetlex?label=beetlex&style=social" />
+                            </a>|
+                            <a class="menu-item" href="https://github.com/ikende/fasthttpapi" target="_blank">
+                                <img src="https://img.shields.io/github/stars/ikende/fasthttpapi?label=FastHttpApi&style=social" />
+                            </a>|
+                            <a class="menu-item" href="https://github.com/ikende/Bumblebee" target="_blank">
+                                <img src="https://img.shields.io/github/stars/ikende/Bumblebee?label=Bumblebee&style=social" />
+                            </a>|
+
+                            <br />
+                            <br />
+                            <a href="https://www.nuget.org/packages/BeetleX/" target="_blank"> <img src="https://img.shields.io/nuget/vpre/beetlex?label=BeetleX" /> <img src="https://img.shields.io/nuget/dt/BeetleX" /></a>
+                        </p>
+                    </div>
+
+                    <div id="document_content" class="content document" v-html="compiledMarkdown" style="padding-top:70px;">
+
+                    </div>
+
+                    <div v-if="docDirectory.length>0" class="doc-directory-panel">
+                        <div style="text-align:center;">
+                            <a href="javascript:void(0)" style="color:#4f5a6d" @click="displayDocDirectory=!displayDocDirectory"><img style="width:24px;" src="images/directory.png" /></a>
+                        </div>
+
+                        <ol v-if="displayDocDirectory" style="padding:10px;padding-left:20px;padding-right:20px;">
+                            <li v-for="item in docDirectory">
+                                <a :href="['#'+item.id]" @click="onSelectDircotry">{{item.text}}</a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        webSiteInfo.admin = false;
+        var docid = _url.tag;
+        var model = {
+            info: webSiteInfo,
+            filter: '',
+            content: '',
+            directory: [],
+            documents: [],
+            docDirectory: [],
+            displayDocDirectory: true,
+            listDirectory: new beetlexAction("/List"),
+            getDocument: new beetlexAction("/GetContent", { id: '' }),
+            setCodeStyle: new beetlexAction("/SelectCodeStyle", { style: '' }),
+        };
+        model.setCodeStyle.requested = function (r) {
+            window.location.reload();
+        };
+        model.listDirectory.requested = function (r) {
+            model.directory = r;
+
+            if (docid) {
+                var item = null;
+                model.directory.forEach(function (v) {
+                    if (docid.indexOf(v.ID) >= 0) {
+                        item = v;
+                        return;
+                    }
+                    v.Items.forEach(function (s) {
+                        if (docid.indexOf(s.ID) >= 0) {
+                            item = s;
+                            return;
+                        }
+                    });
+                });
+                if (item) {
+                    page.onSelect(item);
+                    return;
+                }
+            }
+            if (model.directory && model.directory.length > 0) {
+                page.onSelect(model.directory[0]);
+            }
+        };
+        model.getDocument.requested = function (r) {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+            model.content = r;
+
+            setTimeout(function () {
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+                page.getDocDircotry();
+            }, 300);
+        };
+        var page = new Vue({
+            el: '#page', data: model,
+            methods: {
+                onSelect: function (item) {
+                    if (item.IsCategory && !item.HasBody) {
+                        if (item.Items && item.Items.length > 0)
+                            item = item.Items[0];
+                    }
+                    this.directory.forEach(function (c) {
+                        c.Selected = false;
+                        c.Items.forEach(function (s) {
+                            s.Selected = false;
+                        });
+                    });
+                    model.getDocument.get({ id: item.ID });
+                    item.Selected = true;
+                    this.directory.forEach(function (c) {
+                        if (item.Category == c.ID) {
+                            c.Selected = true;
+                            c.Expand = true;
+                        }
+                    });
+                },
+                onSelectStyle: function (e) {
+                    //alert(e);
+                    this.setCodeStyle.get({ style: e });
+                },
+                onSelectDircotry: function () {
+                    setTimeout(function () {
+                        document.body.scrollTop = document.body.scrollTop - 60; // For Safari
+                        document.documentElement.scrollTop = document.documentElement.scrollTop - 60; // For Chrome, Firefox, IE and Opera
+
+                    }, 200);
+                },
+                getDocDircotry: function () {
+                    var items = document.getElementById("document_content").querySelectorAll("h2,h3,h4");
+                    var ditems = [];
+                    if (items.length >= 3) {
+                        items.forEach(function (v) {
+                            ditems.push({ name: v.nodeName, id: v.id, text: v.innerText });
+                        });
+                    }
+                    this.docDirectory = ditems;
+                }
+            },
+            computed: {
+                compiledMarkdown: function () {
+
+                    return marked(this.content);
+                }
+            }
+        });
+        model.listDirectory.get();
+
+        var renderer = new marked.Renderer();
+        renderer.link = function (href, title, text) {
+            var link = marked.Renderer.prototype.link.apply(this, arguments);
+            return link.replace("<a", "<a target='_blank'");
+        };
+
+        marked.setOptions({
+            renderer: renderer
+        });
+    </script>
+</body>
+
+</html>

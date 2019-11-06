@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="/css/idea.css" rel="stylesheet" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/beetlex4axios.js"></script>
+    <script src="/js/component.js"></script>
+    <script src="/js/marked.js"></script>
+    <script src="/js/highlight.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info" :page="cate?'cate':'index'">
+
+        </page-header>
+
+
+        <div class="container" style="padding-top:60px;">
+            <div class="row">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" :class="[edit?'active':'']"><a href="javascript:void(0)" @click="edit=true">编辑</a></li>
+                    <li role="presentation" :class="[edit?'':'active']"><a href="javascript:void(0)" @click="edit=false">预览</a></li>
+                </ul>
+            </div>
+            <div class="row">
+                <h1>{{getDocument.result.Title}}</h1>
+                <hr style="padding:1px;margin:2px;" />
+            </div>
+            <div class="row" :style="{display:(edit?'':'none')}">
+
+                <textarea id="txtDocument" @drop="onFileDrop" @change="onContentChange" @paste="onFilePaste" v-model="getDocumentContent.result" style="margin-top:10px;width:100%;overflow-x: hidden; overflow-y:visible;" rows="20">
+
+                </textarea>
+                <input @change="onSelectFile" type="file" id="upfile" style="display:none" />
+                <button @click="document.getElementById('upfile').click();" class="btn btn-default btn-sm">上传文件(只支持jpg,png,zip和rar;最大不能超过2MB)</button>
+                <img v-if="upload" src="/images/ajax-loader.gif" />
+
+                <button @click="saveDocument.post()" style="float:right;" class="btn btn-default btn-sm">保存</button>
+
+            </div>
+            <div class="row document" :style="{display:(edit?'none':'')}">
+                <div v-html="compiledMarkdown">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var cate = _url.queryString["cate"];
+        var docID = _url.fileNameWithOutExt;
+        var getDocumentContent = new beetlexAction("/admin/GetDocumentContent", { id: docID, cate: cate }, "");
+        var getDocument = new beetlexAction("/admin/GetDocument", { id: docID, cate: cate }, { Title: '' });
+        var saveDocument = new beetlexAction("/admin/SaveDocumentContent", { id: docID, content: '' })
+        saveDocument.requesting = function (d) {
+            d.id = docID;
+            d.content = getDocumentContent.result;
+            return true;
+        };
+        saveDocument.requested = function (r) {
+            alert('数据保存完成！');
+        };
+
+        var page = new Vue({
+            el: '#page',
+
+            data: {
+                info: webSiteInfo,
+                getDocumentContent: getDocumentContent,
+                getDocument: getDocument,
+                saveDocument: saveDocument,
+                edit: true,
+                upload: false,
+            },
+            computed: {
+                compiledMarkdown: function () {
+                    setTimeout(function () {
+                        document.querySelectorAll('pre code').forEach((block) => {
+                            hljs.highlightBlock(block);
+                        });
+                    }, 300);
+                    return marked(getDocumentContent.result);
+                }
+            },
+            methods: {
+                onFilePaste: function (event) {
+                    var _this = this;
+                    var items = event.clipboardData.items;
+                    for (var i = 0; i < items.length; ++i) {
+                        if (items[i].kind == 'file' && items[i].type.indexOf('image/') >= 0) {
+                            var blob = items[i].getAsFile();
+                            this.onResizeImage(blob, function (name, buffer) {
+                                _this.upload = true;
+                                axios.put("/admin/PasteImage", buffer)
+                                    .then(function (response) {
+                                     
+                                        var str = "";
+                                        str += '\r\n![](/files/' + response.data.Data + '.jpg)\r\n'
+                                        var el = document.getElementById("txtDocument");
+                                        var newText = str;
+                                        var start = el.selectionStart;
+                                        var end = el.selectionEnd;
+                                        var text = el.value;
+                                        var before = text.substring(0, start)
+                                        var after = text.substring(end, text.length)
+                                        el.value=(before + newText + after)
+                                        el.selectionStart = el.selectionEnd = start + newText.length
+                                        el.focus()
+                                        getDocumentContent.result = el.value;
+
+
+                                        _this.upload = false;
+                                    })
+                                    .catch(function (error) {
+                                        alert(error);
+                                        _this.upload = false;
+                                    });
+                            });
+                        };
+                    };
+                },
+
+                onFileDrop: function (event) {
+                    event.preventDefault();
+                    this.onUploadFile(event.dataTransfer.files[0]);
+                },
+
+                onResizeImage: function (file, callback) {
+                    var filename = file.name;
+                    var img = document.createElement("img");
+                    img.onload = function () {
+                        var canvas = document.createElement("canvas");
+                        var MAX_WIDTH = 1024;
+                        var MAX_HEIGHT = 768;
+                        var width = img.width;
+                        var height = img.height;
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, width, height);
+                        var dataUrl = canvas.toDataURL('image/jpeg', 0.98);
+                        var byteString = atob(dataUrl.split(',')[1]);
+                        var ab = new ArrayBuffer(byteString.length);
+
+                        var ia = new Uint8Array(ab);
+                        for (var i = 0; i < byteString.length; i++) {
+                            ia[i] = byteString.charCodeAt(i);
+                        }
+                        callback(filename, ab);
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                },
+
+                onUploadFile: function (file) {
+                    var _this = this;
+                    var filename = file.name.toLowerCase();
+                    var match = /((\.jpg)|(\.png)|(\.zip)|(\.rar)){1}/ig
+                    var isimg = /((\.jpg)|(\.png)){1}/ig
+                    if (filename.match(match)) {
+                        if (file.size > 1024 * 1024 * 2) {
+                            alert('文件大小不能超过2MB');
+                            return;
+                        }
+                        var filereader = new FileReader();
+                        filereader.onload = function () {
+                            _this.upload = true;
+                            axios.put("/admin/UploadFile?name=" + encodeURI(filename), this.result)
+                                .then(function (response) {
+                                    //alert(response.data.Data);
+                                    if (filename.match(isimg))
+                                        getDocumentContent.result += '\r\n![](/files/' + filename + ')\r\n';
+                                    else
+                                        getDocumentContent.result += '\r\n[' + filename + '](/files/' + filename + ')\r\n';
+                                    _this.upload = false;
+                                })
+                                .catch(function (error) {
+                                    alert(error);
+                                    _this.upload = false;
+                                });
+                        };
+                        filereader.readAsArrayBuffer(file);
+                        //alert(file.size);
+                    }
+                    else {
+                        alert('只能上传下文件:jpg,png,zip和rar');
+                    }
+                },
+
+                onContentChange: function () {
+
+                },
+
+                onSelectFile: function (e) {
+                    var file = e.target.files[0];
+                    this.onUploadFile(file);
+                },
+
+            }
+        });
+        getDocumentContent.get();
+        getDocument.get();
+        var renderer = new marked.Renderer();
+        renderer.link = function (href, title, text) {
+            var link = marked.Renderer.prototype.link.apply(this, arguments);
+            return link.replace("<a", "<a target='_blank'");
+        };
+
+        marked.setOptions({
+            renderer: renderer
+        });
+    </script>
+</body>
+
+</html>

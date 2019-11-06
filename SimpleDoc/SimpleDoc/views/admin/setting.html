@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <link href="/css/site.css" rel="stylesheet" />
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/beetlex4axios.js"></script>
+    <script src="/js/component.js"></script>
+    <title></title>
+
+</head>
+<body>
+    <div id="page">
+        <page-header :info="info" :page="'setting'">
+
+        </page-header>
+
+
+        <div class="container" style="padding-top:60px;">
+            <form>
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" v-model="getTitle.result" class="form-control input-sm">
+                </div>
+
+                <button type="button" @click="saveTitle.get()" class="btn btn-default btn-sm">修改</button>
+            </form>
+            <hr />
+            <form>
+                <div class="form-group">
+                    <label>新密码</label>
+                    <input type="password" v-model="changePWD.data.pwd" class="form-control input-sm">
+                </div>
+                <div class="form-group">
+                    <label>确认密码</label>
+                    <input type="password" v-model="changePWD.data.confirm" class="form-control input-sm">
+                </div>
+                <button type="button" @click="changePWD.post()" class="btn btn-default btn-sm">修改密码</button>
+            </form>
+            <hr />
+            <form>
+                <div class="form-group">
+                    <label>JWT Key</label>
+                    <input type="text" :value="getKey.result" readonly class="form-control input-sm">
+                </div>
+
+                <button type="button" @click="recreateKey.get()" class="btn btn-default btn-sm">重新创建</button>
+            </form>
+
+        </div>
+
+        <div class="navbar navbar-fixed-bottom bs-docs-nav footer" style="min-height:1px;">
+            <div class="container">
+                <page-footer></page-footer>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var getTitle = new beetlexAction("/admin/GetTitle", null, "");
+        var saveTitle = new beetlexAction("/admin/SaveTitle", { title: '' });
+        saveTitle.requesting = function (d) {
+            d.title = getTitle.result;
+            return true;
+        };
+        saveTitle.requested = function (r) { alert('标题修改成功！'); }
+
+        var getKey = new beetlexAction("/admin/GetKey", null, "");
+
+        var changePWD = new beetlexAction("/admin/ChangePwd", { pwd: '', confirm: '' })
+        changePWD.requesting = function (d) {
+            if (!d.pwd) {
+                alert('请输入新密码!')
+                return false;
+            }
+            if (d.pwd != d.confirm) {
+                alert('密码不匹配!')
+                return false;
+            }
+            return true;
+        };
+        changePWD.requested = function (r) { alert('密码修改成功！'); }
+
+        var recreateKey = new beetlexAction("/admin/ReCreatKey");
+        recreateKey.requested = function (r) {
+            alert('已经重新创建Key！');
+            getKey.get();
+        };
+
+        var page = new Vue({
+            el: '#page',
+            data: {
+                info: webSiteInfo,
+                getKey: getKey,
+                getTitle: getTitle,
+                changePWD: changePWD,
+                saveTitle: saveTitle,
+                recreateKey: recreateKey,
+            }
+        });
+        getTitle.get();
+        getKey.get();
+    </script>
+</body>
+
+</html>
