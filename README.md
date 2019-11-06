@@ -8,5 +8,4 @@
 
 应用示例 http://doc.ikende.com/
 
-![](![image](https://user-images.githubusercontent.com/2564178/68264979-a9582d00-0085-11ea-9789-00a1e8748918.png)
-)
+![](https://user-images.githubusercontent.com/2564178/68264979-a9582d00-0085-11ea-9789-00a1e8748918.png)
