@@ -234,3 +234,46 @@ code {
         text-decoration: none;
         color:#000;
     }
+.documentEditor
+{
+    position:absolute;
+    padding:10px;
+    top:70px;
+    left:2%;
+    right:51%;
+    bottom:52px;
+    background-color:#fff;
+    border-style:solid;
+    border-color:#c4c4c4;
+    border-width:1px;
+    border-radius:4px;
+}
+
+.documentEditorFull {
+    position: absolute;
+    padding: 10px;
+    top: 70px;
+    left: 100px;
+    right: 100px;
+    bottom: 52px;
+    background-color: #fff;
+    border-style: solid;
+    border-color: #c4c4c4;
+    border-width: 1px;
+    border-radius: 4px;
+}
+
+.documentViewer {
+    position: absolute;
+    padding: 10px;
+    left: 51%;
+    top: 70px;
+    bottom: 52px;
+    right: 2%;
+    background-color: #fff;
+    border-style: solid;
+    border-color: #c4c4c4;
+    border-width: 1px;
+    border-radius: 4px;
+    display: block;
+}

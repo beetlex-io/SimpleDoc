@@ -23,30 +23,30 @@
 
 
         <div class="container" style="padding-top:60px;">
-            <div class="row">
-                <ul class="nav nav-tabs">
-                    <li role="presentation" :class="[edit?'active':'']"><a href="javascript:void(0)" @click="edit=true">编辑</a></li>
-                    <li role="presentation" :class="[edit?'':'active']"><a href="javascript:void(0)" @click="edit=false">预览</a></li>
-                </ul>
-            </div>
-            <div class="row">
-                <h1>{{getDocument.result.Title}}</h1>
-                <hr style="padding:1px;margin:2px;" />
-            </div>
-            <div class="row" :style="{display:(edit?'':'none')}">
 
-                <textarea id="txtDocument" @drop="onFileDrop" @change="onContentChange" @paste="onFilePaste" v-model="getDocumentContent.result" style="margin-top:10px;width:100%;overflow-x: hidden; overflow-y:visible;" rows="20">
+            <div :class="[full?'row documentEditorFull':'row documentEditor']">
+                <h3>{{getDocument.result.Title}}</h3>
+                <div style="position:absolute;top:50px;left:10px;right:10px;bottom:50px;">
+                    <textarea id="txtDocument" @drop="onFileDrop" @change="onContentChange" @paste="onFilePaste" v-model="getDocumentContent.result" style="overflow-x: hidden; overflow-y:visible; width:100%;height:100%">
 
                 </textarea>
-                <input @change="onSelectFile" type="file" id="upfile" style="display:none" />
-                <button @click="document.getElementById('upfile').click();" class="btn btn-default btn-sm">上传文件(只支持jpg,png,zip和rar;最大不能超过2MB)</button>
-                <img v-if="upload" src="/images/ajax-loader.gif" />
+                </div>
+                <div style="position:absolute;bottom:10px;left:10px;right:10px;">
+                    <input @change="onSelectFile" type="file" id="upfile" style="display:none" />
+                    <button @click="document.getElementById('upfile').click();" class="btn btn-default btn-sm">上传文件(只支持jpg,png,zip和rar;最大不能超过2MB)</button>
+                    <img v-if="upload" src="/images/ajax-loader.gif" />
+                    <button @click="full=!full" style="float:right;margin-left:4px;" class="btn btn-default btn-sm">
+                        <span v-if="!full">全屏模式</span>
+                        <span v-else>预览模式</span>
+                    </button>
+                    <button @click="saveDocument.post()" style="float:right;" class="btn btn-default btn-sm">保存</button>
 
-                <button @click="saveDocument.post()" style="float:right;" class="btn btn-default btn-sm">保存</button>
+                </div>
 
             </div>
-            <div class="row document" :style="{display:(edit?'none':'')}">
-                <div v-html="compiledMarkdown">
+            <div class="row documentViewer" :style="{display:full?'none':''}">
+
+                <div v-html="compiledMarkdown" class="document" style="position:absolute;top:10px;overflow-y:auto;left:10px;right:10px;bottom:10px;overflow-x:hidden;padding-right:20px;">
 
                 </div>
             </div>
@@ -85,6 +85,7 @@
                 saveDocument: saveDocument,
                 edit: true,
                 upload: false,
+                full: false,
             },
             computed: {
                 compiledMarkdown: function () {
@@ -97,6 +98,19 @@
                 }
             },
             methods: {
+                onInsertUrl: function (url) {
+                    var el = document.getElementById("txtDocument");
+                    var newText = url;
+                    var start = el.selectionStart;
+                    var end = el.selectionEnd;
+                    var text = el.value;
+                    var before = text.substring(0, start)
+                    var after = text.substring(end, text.length)
+                    el.value = (before + newText + after)
+                    el.selectionStart = el.selectionEnd = start + newText.length
+                    el.focus()
+                    getDocumentContent.result = el.value;
+                },
                 onFilePaste: function (event) {
                     var _this = this;
                     var items = event.clipboardData.items;
@@ -107,22 +121,9 @@
                                 _this.upload = true;
                                 axios.put("/admin/PasteImage", buffer)
                                     .then(function (response) {
-                                     
                                         var str = "";
                                         str += '\r\n![](/files/' + response.data.Data + '.jpg)\r\n'
-                                        var el = document.getElementById("txtDocument");
-                                        var newText = str;
-                                        var start = el.selectionStart;
-                                        var end = el.selectionEnd;
-                                        var text = el.value;
-                                        var before = text.substring(0, start)
-                                        var after = text.substring(end, text.length)
-                                        el.value=(before + newText + after)
-                                        el.selectionStart = el.selectionEnd = start + newText.length
-                                        el.focus()
-                                        getDocumentContent.result = el.value;
-
-
+                                        _this.onInsertUrl(str);
                                         _this.upload = false;
                                     })
                                     .catch(function (error) {
@@ -195,11 +196,12 @@
                             _this.upload = true;
                             axios.put("/admin/UploadFile?name=" + encodeURI(filename), this.result)
                                 .then(function (response) {
-                                    //alert(response.data.Data);
+                                    var str;
                                     if (filename.match(isimg))
-                                        getDocumentContent.result += '\r\n![](/files/' + filename + ')\r\n';
+                                        str= '\r\n![](/files/' + filename + ')\r\n';
                                     else
-                                        getDocumentContent.result += '\r\n[' + filename + '](/files/' + filename + ')\r\n';
+                                        str = '\r\n[' + filename + '](/files/' + filename + ')\r\n';
+                                    _this.onInsertUrl(str);
                                     _this.upload = false;
                                 })
                                 .catch(function (error) {
