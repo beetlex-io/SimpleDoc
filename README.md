@@ -16,7 +16,7 @@
 
   只要文章超过3个h2,h3,h4的标签则会对应生成文件的目录列表，方便文章内容定位
 
-应用示例 http://doc.ikende.com/
+应用示例 http://doc.beetlex.io/
 
 ![](https://user-images.githubusercontent.com/2564178/68264979-a9582d00-0085-11ea-9789-00a1e8748918.png)
 
