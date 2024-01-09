@@ -258,7 +258,7 @@
   <ItemGroup>
     <PackageReference Include="BeetleX.FastHttpApi" Version="1.7.3.6" />
     <PackageReference Include="BeetleX.FastHttpApi.Hosting" Version="0.8.8" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
     <PackageReference Include="System.Memory" Version="4.5.3" />
   </ItemGroup>
 
